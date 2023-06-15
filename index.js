@@ -29,7 +29,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-rl.question("Enter the ID: ", async (id) => {
+rl.question("Ingresa el ID de la nota PROD: ", async (id) => {
   try {
     const response = await fetch(
       `${BASE_PROD}/draft/v1/story/${id}/revision/published`,
@@ -49,9 +49,7 @@ rl.question("Enter the ID: ", async (id) => {
       headers: headersSandbox,
     });
     const res = await sandboxResponse.json();
-    console.log(chalk.green("--------------------------------"));
     console.log(chalk.green("ID DE LA NOTA EN SANDBOX: ") + res.id);
-    console.log(chalk.green("--------------------------------"));
   } catch (err) {
     console.log(err);
   }
