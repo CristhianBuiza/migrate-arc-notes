@@ -38,17 +38,45 @@ rl.question("Ingresa el ID de la nota PROD: ", async (id) => {
         headers,
       }
     );
-    const ans = await response.json();
-    const nota = JSON.stringify(ans.ans);
+    const { ans } = await response.json();
+    const nota = JSON.stringify(ans);
+    const idPhoto = await ans.promo_items.basic._id;
+    const resImage = await fetch(
+      `${BASE_PROD}/photo/api/v2/photos/${idPhoto}`,
+      {
+        method: "GET",
+        headers,
+      }
+    );
+    const photo = await resImage.json();
+    const photoJson = JSON.stringify(photo);
+
+    try {
+      const sandboxResponse = await fetch(
+        `${BASE_SANDBOX}/photo/api/v2/photos/${idPhoto}`,
+        {
+          method: "POST",
+          body: photoJson,
+          headers: headersSandbox,
+        }
+      );
+      const resendRes = await sandboxResponse.json();
+      console.log(
+        chalk.green("STATUS DE LA FOTO EN SANDBOX : ok") + resendRes._id
+      );
+    } catch (error) {
+      console.log(error);
+    }
     // IF YOU WANT TO COPY IN YOUR CLIPBOARD
     // clipboard.writeSync(nota);
     // console.log(chalk.green("NOTA COPIADA!"));
-    const sandboxResponse = await fetch(`${BASE_SANDBOX}/draft/v1/story/`, {
+
+    const sandboxResponseNota = await fetch(`${BASE_SANDBOX}/draft/v1/story/`, {
       method: "POST",
       body: nota,
       headers: headersSandbox,
     });
-    const res = await sandboxResponse.json();
+    const res = await sandboxResponseNota.json();
     console.log(chalk.green("ID DE LA NOTA EN SANDBOX: ") + res.id);
   } catch (err) {
     console.log(err);
